@@ -1,0 +1,385 @@
+index.html
+```html
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>政治立场图谱 · 60位历史与当代政治人物测试</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <!-- 使用系统自带中文字体栈，保证国内网络环境下秒开无阻塞 -->
+  <style>
+    :root {
+      --bg-page: #f5f5f2;
+      --bg-card: #ffffff;
+      --bg-soft-gray: #efefea;
+      --bg-pale-yellow: #faf4dc;
+      --bg-butter: #f3e6b3;
+      --accent-gold: #d9be5b;
+      --accent-deep: #9c8228;
+      --border-soft: #e6e4dc;
+      --ink-main: #2a2925;
+      --ink-muted: #6c6a63;
+    }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Noto Sans SC', sans-serif;
+      background-color: var(--bg-page);
+      color: var(--ink-main);
+      -webkit-font-smoothing: antialiased;
+    }
+    .card-soft {
+      background: var(--bg-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 26px;
+      box-shadow: 0 4px 20px rgba(42, 41, 37, 0.035);
+    }
+    .card-yellow {
+      background: linear-gradient(145deg, #fcf8e8 0%, #f6ecc6 100%);
+      border: 1px solid #eadca6;
+      border-radius: 26px;
+    }
+    .pill-btn {
+      border-radius: 9999px;
+      transition: all 0.18s ease;
+    }
+    .pill-btn:active {
+      transform: scale(0.98);
+    }
+    .gallery-tile {
+      background: #ffffff;
+      border: 1px solid var(--border-soft);
+      border-radius: 22px;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
+    }
+    .gallery-tile:hover {
+      transform: translateY(-2px);
+      border-color: #dfd098;
+      background-color: #fffdf6;
+      box-shadow: 0 8px 22px rgba(156, 130, 40, 0.08);
+    }
+    .option-btn {
+      border-radius: 18px;
+      border: 1.5px solid var(--border-soft);
+      background: #fafaf7;
+      transition: all 0.15s ease;
+    }
+    .option-btn:hover {
+      border-color: #dfd098;
+      background: #fcf8e8;
+    }
+    .option-btn.selected {
+      border-color: #c8ac46;
+      background: #f6ecc6;
+      color: #2a2925;
+      box-shadow: 0 2px 10px rgba(200, 172, 70, 0.18);
+    }
+    .fade-in {
+      animation: fadeIn 0.22s ease-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #f2f2ee; }
+    ::-webkit-scrollbar-thumb { background: #dad7cb; border-radius: 999px; }
+    ::-webkit-scrollbar-thumb:hover { background: #c7c3b2; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+  <!-- Sticky Minimalist Header -->
+  <header class="sticky top-0 z-30 backdrop-blur-md bg-[#f5f5f2]/90 border-b border-[#e6e4dc]">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <button id="brandBtn" class="flex items-center gap-2.5 text-left focus:outline-none">
+        <span class="w-9 h-9 rounded-full bg-[#f3e6b3] border border-[#e3d18a] flex items-center justify-center shrink-0">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#5e4e14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 20.66 7 20.66 17 12 22 3.34 17 3.34 7 12 2"></polygon>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </span>
+        <div class="min-w-0">
+          <div class="font-semibold text-sm sm:text-base tracking-tight text-[#2a2925] leading-tight whitespace-nowrap">政治立场图谱</div>
+          <div class="text-[11px] text-[#7b786f] hidden sm:block whitespace-nowrap">60位历史与当代人物 · 无轴多题直配</div>
+        </div>
+      </button>
+
+      <nav class="flex items-center gap-1 bg-[#eae9e3] p-1 rounded-full shrink-0">
+        <button id="navHome" class="pill-btn whitespace-nowrap px-3 sm:px-3.5 py-1.5 text-xs sm:text-sm font-medium bg-white text-[#2a2925] shadow-sm">图鉴主页</button>
+        <button id="navQuiz" class="pill-btn whitespace-nowrap px-3 sm:px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#6c6a63] hover:text-[#2a2925]">开始测试</button>
+        <button id="navResult" class="pill-btn whitespace-nowrap px-3 sm:px-3.5 py-1.5 text-xs sm:text-sm font-medium text-[#6c6a63] hover:text-[#2a2925] hidden">测试结果</button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8">
+
+    <!-- VIEW 1: HOME + 60-FIGURE UNGROUPED CHRONOLOGICAL GALLERY -->
+    <section id="viewHome" class="space-y-8 fade-in">
+      <!-- Hero Banner -->
+      <div class="card-yellow p-6 sm:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+        <div class="max-w-2xl space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/80 border border-[#e6d79d] text-[11px] sm:text-xs font-medium text-[#6f5d1a] whitespace-nowrap">
+            <span class="w-2 h-2 rounded-full bg-[#d4b648] shrink-0"></span>
+            1800年至今 · 30题初测 + 50题进阶
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-bold tracking-tight text-[#2a2925] leading-snug">
+            60 位人物，找到你的立场共鸣
+          </h1>
+          <p class="text-sm sm:text-base text-[#5c594f] leading-relaxed">
+            先完成 <strong>30 道基础议题</strong> 获取初步匹配结果与六方向契合度六边形图；若想进一步拉开细节差距，可继续完成 <strong>50 道进阶题（共 80 题）</strong>，对比你与 60 位鲜明政治人物的异同。
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-3 shrink-0">
+          <button id="startBasicBtn" class="pill-btn px-6 py-3 bg-[#2a2925] hover:bg-[#3f3d37] text-[#fcf8e8] text-sm font-semibold shadow-sm">
+            开始 30 题基础测试
+          </button>
+          <button id="resumeQuizBtn" class="pill-btn px-5 py-3 bg-white/90 hover:bg-white border border-[#dfd19b] text-[#2a2925] text-sm font-medium hidden">
+            继续当前进度
+          </button>
+        </div>
+      </div>
+
+      <!-- 60-Figure Chronological Gallery (Ungrouped) -->
+      <div class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h2 class="text-lg sm:text-xl font-bold text-[#2a2925]">60 位政治人物完整图鉴</h2>
+            <p class="text-xs sm:text-sm text-[#76736a] mt-0.5">不设阵营分组，统一按出生年份从早到晚排列（1769 – 1984）· 点击任意人物查看档案</p>
+          </div>
+          <div class="relative w-full sm:w-72">
+            <input id="gallerySearch" type="text" placeholder="搜索姓名、国家/政权或知名事件..." class="w-full pl-10 pr-4 py-2.5 text-sm bg-white border border-[#e3e1d8] rounded-full focus:outline-none focus:border-[#d4b648] focus:ring-2 focus:ring-[#f3e6b3]/70 transition" />
+            <svg class="w-4 h-4 text-[#8c8980] absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+          </div>
+        </div>
+
+        <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4"></div>
+        <div id="galleryEmpty" class="hidden card-soft p-10 text-center text-sm text-[#7a776e]">
+          没有找到匹配的人物，请换个关键词试试。
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 2: QUIZ (30 BASIC + OPTIONAL 50 ADVANCED = 80) -->
+    <section id="viewQuiz" class="hidden max-w-3xl mx-auto space-y-5 fade-in">
+      <!-- Progress & Stage Bar -->
+      <div class="card-soft p-5 space-y-3">
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm">
+          <div class="flex items-center gap-2">
+            <span id="quizStageBadge" class="px-3 py-1 rounded-full bg-[#f6ecc6] text-[#5e4e14] font-semibold text-xs">基础测试（30题）</span>
+            <span id="quizDomainBadge" class="px-3 py-1 rounded-full bg-[#efefea] text-[#57554e] font-medium text-xs">体制与权力</span>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <div class="font-medium text-[#6c6a63]">
+              第 <span id="quizCurrentNum" class="text-[#2a2925] font-bold">1</span> / <span id="quizTotalNum">30</span> 题
+              <span class="mx-1.5 text-[#ccc9be]">|</span>
+              已答 <span id="quizAnsweredCount" class="text-[#2a2925] font-semibold">0</span> 题
+            </div>
+            <button id="openQuestionListBtn" type="button" class="pill-btn px-3 py-1 text-xs font-semibold bg-[#faf4dc] hover:bg-[#f3e6b3] border border-[#e6d79d] text-[#5e4e14] flex items-center gap-1 whitespace-nowrap">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+                <line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              题目列表
+            </button>
+          </div>
+        </div>
+        <div class="w-full h-2.5 bg-[#ecebe4] rounded-full overflow-hidden">
+          <div id="quizProgressBar" class="h-full bg-[#dcc05c] rounded-full transition-all duration-300" style="width: 3%;"></div>
+        </div>
+      </div>
+
+      <!-- Question Card -->
+      <div class="card-soft p-6 sm:p-8 space-y-6">
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between gap-3">
+            <span id="questionIdLabel" class="text-xs font-semibold tracking-wider text-[#9c8228] uppercase">Q01</span>
+            <button id="weightToggleBtn" type="button" class="pill-btn px-3 py-1 text-xs font-medium border border-[#e3e1d8] bg-[#fafaf7] text-[#6c6a63] hover:border-[#d4b648] flex items-center gap-1.5">
+              <span id="weightStar">☆</span> <span id="weightBtnText">设为重点议题（0/5）</span>
+            </button>
+          </div>
+          <h2 id="questionText" class="text-lg sm:text-xl font-bold text-[#2a2925] leading-relaxed"></h2>
+          <p id="questionHint" class="text-xs sm:text-sm text-[#76736a] leading-relaxed"></p>
+        </div>
+
+        <!-- 5 Attitude Options -->
+        <div id="optionsContainer" class="space-y-2.5"></div>
+
+        <!-- Quiz Footer Controls -->
+        <div class="pt-3 border-t border-[#eeede6] flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <button id="prevQBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-medium bg-[#efefea] hover:bg-[#e5e4dc] text-[#3c3a34] disabled:opacity-40">
+              上一题
+            </button>
+            <button id="skipQBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-medium bg-white border border-[#e3e1d8] hover:bg-[#faf8ee] text-[#6c6a63]">
+              跳过此题
+            </button>
+          </div>
+          <div class="flex items-center gap-2">
+            <button id="finishEarlyBtn" class="pill-btn px-5 py-2 text-xs sm:text-sm font-semibold bg-[#2a2925] hover:bg-[#3f3d37] text-[#fcf8e8] hidden">
+              查看匹配结果
+            </button>
+            <button id="nextQBtn" class="pill-btn px-5 py-2 text-xs sm:text-sm font-semibold bg-[#f3e6b3] hover:bg-[#ebd995] text-[#2a2925]">
+              下一题
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="text-center text-xs text-[#8a877e]">
+        提示：键盘按 1–5 可快速选择态度，左右方向键可切题
+      </p>
+    </section>
+
+    <!-- VIEW 3: RESULT PAGE -->
+    <section id="viewResult" class="hidden space-y-6 fade-in">
+      <!-- Top Result Summary Header -->
+      <div class="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span id="resultModeBadge" class="px-3 py-1 rounded-full bg-[#f3e6b3] text-[#5e4e14] text-xs font-semibold">基础 30 题结果</span>
+            <span id="resultStatsBadge" class="px-3 py-1 rounded-full bg-[#eae9e3] text-[#5c594f] text-xs font-medium">已答 30 题</span>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-bold text-[#2a2925] mt-2">你的历史政治立场契合报告</h2>
+        </div>
+        <div class="flex flex-wrap items-center gap-2">
+          <button id="backToTopMatchBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-medium bg-white border border-[#e3e1d8] hover:bg-[#fcf8e8] text-[#2a2925] hidden">
+            回到最契合人物
+          </button>
+          <button id="resetQuizBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-medium bg-[#eae9e3] hover:bg-[#dfddd5] text-[#47453f]">
+            重新测试
+          </button>
+        </div>
+      </div>
+
+      <!-- Unified Featured Profile Card + 6-Direction Hexagon -->
+      <div id="resultCardMount"></div>
+
+      <!-- Optional Stage 2 Upgrade Banner (Visible after 30-Q Basic Test) -->
+      <div id="upgradeBanner" class="card-yellow p-6 sm:p-7 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="text-xs font-semibold text-[#7a6419]">想要更精确区分 60 位人物？</div>
+          <h3 class="text-lg font-bold text-[#2a2925]">继续挑战 50 道进阶题（升级至 80 题精测）</h3>
+          <p class="text-xs sm:text-sm text-[#5c594f]">
+            进阶题会深入细分君主/共和、公有/私有、渐进/激进与外交策略细节，进一步拉开相近人物之间的差距。
+          </p>
+        </div>
+        <button id="startAdvancedBtn" class="pill-btn px-6 py-3 bg-[#2a2925] hover:bg-[#3f3d37] text-[#fcf8e8] text-sm font-semibold shrink-0 shadow-sm">
+          进入 50 题进阶测试
+        </button>
+      </div>
+
+      <!-- All 60 Figures Match Ranking -->
+      <div class="card-soft p-5 sm:p-6 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <h3 class="text-base sm:text-lg font-bold text-[#2a2925]">60 位人物契合度全景榜</h3>
+            <p class="text-xs text-[#76736a]">点击任意人物即可切换上方档案卡与六方向六边形图进行对比</p>
+          </div>
+          <input id="rankSearch" type="text" placeholder="筛选人物名称或国家..." class="w-full sm:w-60 px-4 py-2 text-xs sm:text-sm bg-[#fafaf7] border border-[#e3e1d8] rounded-full focus:outline-none focus:border-[#d4b648]" />
+        </div>
+        <div id="rankList" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-[420px] overflow-y-auto pr-1"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Unified Profile Modal (For Gallery Clicks) -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#2a2925]/45 backdrop-blur-[2px]">
+    <div class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto card-soft p-6 sm:p-8 fade-in">
+      <button id="closeModalBtn" aria-label="关闭" class="w-9 h-9 rounded-full bg-[#efefea] hover:bg-[#e4e2d9] text-[#4a4842] flex items-center justify-center absolute right-5 top-5 transition">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+      <div id="modalCardMount"></div>
+    </div>
+  </div>
+
+  <!-- In-page Reset Confirmation Modal (No browser confirm()) -->
+  <div id="resetModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#2a2925]/45 backdrop-blur-[2px]">
+    <div class="w-full max-w-sm card-soft p-6 space-y-4 fade-in">
+      <h3 class="text-base font-bold text-[#2a2925]">重新开始测试？</h3>
+      <p class="text-sm text-[#6c6a63]">将清空当前的答题记录与重点议题标记，回到第 1 道基础题。</p>
+      <div class="flex items-center justify-end gap-2 pt-2">
+        <button id="cancelResetBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-medium bg-[#efefea] hover:bg-[#e4e2d9] text-[#3c3a34]">取消</button>
+        <button id="confirmResetBtn" class="pill-btn px-4 py-2 text-xs sm:text-sm font-semibold bg-[#2a2925] hover:bg-[#3f3d37] text-[#fcf8e8]">确认重置</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question List Drawer / Modal -->
+  <div id="questionListModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#2a2925]/45 backdrop-blur-[2px]">
+    <div class="w-full max-w-2xl max-h-[86vh] flex flex-col card-soft p-5 sm:p-6 fade-in">
+      <div class="flex items-start justify-between gap-3 pb-3 border-b border-[#eeede6]">
+        <div>
+          <h3 class="text-base sm:text-lg font-bold text-[#2a2925]">题目列表与重点管理</h3>
+          <p id="qListSummary" class="text-xs text-[#76736a] mt-0.5">点击任意题目可直接跳转重答，点击星标可调整重点议题（最多 5 道）</p>
+        </div>
+        <button id="closeQListBtn" type="button" aria-label="关闭题目列表" class="w-8 h-8 rounded-full bg-[#efefea] hover:bg-[#e4e2d9] text-[#4a4842] flex items-center justify-center shrink-0 transition">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+
+      <div class="flex items-center gap-1.5 py-3">
+        <button id="qFilterAll" type="button" class="pill-btn px-3 py-1 text-xs font-semibold bg-[#2a2925] text-[#fcf8e8]">全部题目</button>
+        <button id="qFilterUnanswered" type="button" class="pill-btn px-3 py-1 text-xs font-medium bg-[#efefea] text-[#5c594f] hover:bg-[#e5e4dc]">未作答</button>
+        <button id="qFilterWeighted" type="button" class="pill-btn px-3 py-1 text-xs font-medium bg-[#efefea] text-[#5c594f] hover:bg-[#e5e4dc]">已标重点</button>
+      </div>
+
+      <div id="qListContainer" class="flex-1 overflow-y-auto space-y-2 pr-1"></div>
+    </div>
+  </div>
+
+  <!-- Minimalist In-page Toast -->
+  <div id="appToast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[60] hidden px-5 py-2.5 rounded-full bg-[#2a2925] text-[#fcf8e8] text-xs sm:text-sm font-medium shadow-lg whitespace-nowrap"></div>
+
+  <!-- Minimal Footer -->
+  <footer class="border-t border-[#e6e4dc] bg-[#f5f5f2] mt-10">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 py-5 space-y-1.5 text-center text-xs text-[#7c7970]">
+      <div class="font-medium text-[#55534b]">声明：本网站测试结果仅供娱乐与历史知识参考，不构成任何政治立场定性或现实评判。</div>
+      <div>本站内容秉持客观史实原则，积极践行并符合中国社会主义核心价值观。</div>
+    </div>
+  </footer>
+
+  <script>
+    // =========================================================================
+    // 1. 6 GOVERNANCE DOMAINS (Vertices of the Hexagon - No Left/Right Axes)
+    // =========================================================================
+    const DOMAINS = [
+      { id: 0, name: '体制与权力', short: '体制与权力' },
+      { id: 1, name: '经济与市场', short: '经济与市场' },
+      { id: 2, name: '福利与分配', short: '福利与分配' },
+      { id: 3, name: '改革与秩序', short: '改革与秩序' },
+      { id: 4, name: '外交与国际', short: '外交与国际' },
+      { id: 5, name: '现代化与危机', short: '现代化与危机' }
+    ];
+
+    const ATTITUDE_OPTIONS = [
+      { value: 2, label: '非常赞成', key: '1' },
+      { value: 1, label: '比较赞成', key: '2' },
+      { value: 0, label: '中立 / 视情况而定', key: '3' },
+      { value: -1, label: '比较反对', key: '4' },
+      { value: -2, label: '非常反对', key: '5' }
+    ];
+
+    // =========================================================================
+    // 2. 80 QUESTIONS (0-29: 30 Basic Questions | 30-79: 50 Advanced Questions)
+    //    Distributed evenly across the 6 domains.
+    // =========================================================================
+    const QUESTIONS = [
+      // --- BASIC 30 (5 per domain, interleaved for pleasant variety) ---
+      // 0-5
+      { id: 0, stage: 'basic', d: 0, text: '国家重大决策应高度集中于强有力的最高领导层，以提升执行效率。', hint: '衡量权力集中度与分权制衡之间的取向。' },
+      { id: 1, stage: 'basic', d: 1, text: '铁路、能源、银行等关键经济命脉应当由国家主导或国有控股。', hint: '涉及国家对战略性产业的控制边界。' },
+      { id: 2, stage: 'basic', d: 2, text: '政府应通过较高累进税和广泛公共福利，主动缩小社会贫富差距。', hint: '反映再分配力度与社会安全网范围。' },
+      { id: 3, stage: 'basic', d: 3, text: '维护国家稳定与既有社会秩序，通常比推动激进的社会变革更重要。', hint: '涉及秩序优先还是变革优先。' },
+      { id: 4, stage: 'basic', d: 4, text: '在国际事务中，本国核心利益与主权自主应优先于多边国际
